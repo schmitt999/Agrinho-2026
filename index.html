@@ -3,47 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agro Forte, Futuro Sustentável</title>
+    <title>Agro Forte: Jogo do Futuro Sustentável</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="logo">Agro<span>Sustentável</span></div>
-        <nav>
-            <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#projetos">Projetos</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="inicio" class="hero">
-        <div class="hero-content">
-            <h1>Agro Forte, Futuro Sustentável</h1>
-            <p>Conectando a força do campo com a tecnologia do amanhã e a preservação de hoje.</p>
-            <a href="javascript:void(0);" onclick="document.getElementById('projetos').scrollIntoView({behavior: 'smooth'})" class="btn">Ver Projetos Front-End</a>
+    <div class="game-container">
+        <div id="tela-inicial" class="tela">
+            <h1>Agro Forte:<br><span>Futuro Sustentável</span></h1>
+            <p>Gerencie sua fazenda tecnológica. Produza alimentos, ganhe dinheiro e proteja o meio ambiente. Consegue manter o equilíbrio perfeito?</p>
+            <button class="btn-jogar" onclick="iniciarJogo()">Começar Simulação</button>
         </div>
-    </section>
 
-    <section id="sobre" class="sobre">
-        <h2>Nossa Missão</h2>
-        <p>Acreditamos que a tecnologia aplicada ao front-end pode dar visibilidade a práticas agrícolas que respeitam o meio ambiente, otimizam recursos e alimentam o mundo de forma consciente.</p>
-    </section>
+        <div id="tela-jogo" class="tela escondido">
+            <header class="status-bar">
+                <div class="recurso">💰 Dinheiro: <span id="res-dinheiro">R$ 1000</span></div>
+                <div class="recurso">🌱 Sustentabilidade: <span id="res-sustentabilidade">100%</span></div>
+                <div class="recurso">🌽 Produção: <span id="res-producao">50%</span></div>
+                <div class="recurso">📅 Rodada: <span id="res-rodada">1</span>/10</div>
+            </header>
 
-    <section id="projetos" class="projetos">
-        <h2>Meus Projetos Front-End</h2>
-        <p class="subtitulo">Aplicações focadas em tecnologia e sustentabilidade</p>
-        
-        <div class="grid-projetos" id="grid-projetos">
+            <div class="fazenda-visual" id="fazenda-cenario">
+                <div class="mensagem-campo" id="feedback-campo">Sua fazenda está pronta para começar!</div>
+                <div id="elemento-solar" class="item-visual escondido">☀️ Painéis Solares Ativos</div>
+                <div id="elemento-drone" class="item-visual escondido">🛸 Drone de Precisão Voando</div>
+                <div id="elemento-reflorestamento" class="item-visual escondido">🌳 Área de Reflorestamento</div>
             </div>
-    </section>
 
-    <footer>
-        <p>&copy; 2026 Agro Forte, Futuro Sustentável. Desenvolvido com 💚 em Front-End.</p>
-    </footer>
+            <main class="painel-acoes">
+                <h3>Escolha sua Estratégia para esta Rodada:</h3>
+                <div class="grade-botoes">
+                    <button class="card-acao" onclick="tomarDecisao('agrotoxico')">
+                        <h4>Agrotóxico Pesado</h4>
+                        <p>Aumenta muito a produção rápido.</p>
+                        <span class="custo">Custo: R$ 100</span>
+                    </button>
+                    <button class="card-acao" onclick="tomarDecisao('organico')">
+                        <h4>Defensivos Orgânicos</h4>
+                        <p>Protege o solo e a biodiversidade.</p>
+                        <span class="custo">Custo: R$ 200</span>
+                    </button>
+                    <button class="card-acao" onclick="tomarDecisao('solar')">
+                        <h4>Instalar Energia Solar</h4>
+                        <p>Gera bônus de sustentabilidade eterno.</p>
+                        <span class="custo">Custo: R$ 400</span>
+                    </button>
+                    <button class="card-acao" onclick="tomarDecisao('drone')">
+                        <h4>Drones de Irrigação</h4>
+                        <p>Economiza água e otimiza colheitas.</p>
+                        <span class="custo">Custo: R$ 350</span>
+                    </button>
+                </div>
+                <button class="btn-avancar" onclick="passarRodada()">Passar de Turno (Colher) 🌾</button>
+            </main>
+        </div>
+
+        <div id="tela-fim" class="tela escondido">
+            <h2 id="fim-titulo">Fim da Simulação</h2>
+            <p id="fim-mensagem">Mensagem de resultado...</p>
+            <button class="btn-jogar" onclick="reiniciarJogo()">Jogar Novamente</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

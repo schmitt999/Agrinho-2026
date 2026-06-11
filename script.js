@@ -1,59 +1,140 @@
-const meusProjetos = [
-    {
-        titulo: "Painel de Controle Hidropônico",
-        descricao: "Interface criada para monitorar o consumo de água e nutrientes em plantações verticais urbanas.",
-        imagem: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=500&q=80",
-        tecnologias: ["HTML", "CSS", "JavaScript"],
-        linkProjeto: "https://seu-usuario.github.io/nome-do-repositorio-projeto1", // Substitua pelo link do projeto rodando
-        linkCodigo: "https://github.com/seu-usuario/nome-do-repositorio-projeto1"   // Substitua pelo link do código no GitHub
-    },
-    {
-        titulo: "Calculadora de Pegada de Carbono",
-        descricao: "Aplicação web que ajuda produtores rurais a calcularem e reduzirem a emissão de CO2 na fazenda.",
-        imagem: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80",
-        tecnologias: ["HTML", "CSS", "JS / API"],
-        linkProjeto: "#", // Se não tiver o link ainda, pode deixar "#"
-        linkCodigo: "#"
-    },
-    {
-        titulo: "Marketplace AgroEcológico",
-        descricao: "E-commerce front-end focado em conectar pequenos produtores orgânicos diretamente com o consumidor final.",
-        imagem: "https://images.unsplash.com/photo-1488459711626-d6df22946802?auto=format&fit=crop&w=500&q=80",
-        tecnologias: ["HTML", "CSS", "Flexbox"],
-        linkProjeto: "#",
-        linkCodigo: "#"
-    }
-];
+// Estado inicial dos recursos do jogo
+let dinheiro = 1000;
+let sustentabilidade = 100;
+let producao = 50;
+let rodada = 1;
 
-// Função para renderizar os projetos na tela
-function carregarProjetos() {
-    const gridProjetos = document.getElementById('grid-projetos');
-    gridProjetos.innerHTML = "";
+// Guarda quais melhorias estruturais já foram compradas
+let conquistas = {
+    solar: false,
+    drone: false
+};
 
-    meusProjetos.forEach(projeto => {
-        const card = document.createElement('div');
-        card.classList.add('card-projeto');
+function iniciarJogo() {
+    dinheiro = 1000;
+    sustentabilidade = 100;
+    producao = 50;
+    rodada = 1;
+    conquistas.solar = false;
+    conquistas.drone = false;
 
-        const tagsHTML = projeto.tecnologias.map(tech => `<span>${tech}</span>`).join('');
+    document.getElementById('elemento-solar').classList.add('escondido');
+    document.getElementById('elemento-drone').classList.add('escondido');
 
-        // Adicionando os botões de ação no HTML do card
-        card.innerHTML = `
-            <img src="${projeto.imagem}" alt="${projeto.titulo}">
-            <div class="card-info">
-                <h3>${projeto.titulo}</h3>
-                <p>${projeto.descricao}</p>
-                <div class="tags">
-                    ${tagsHTML}
-                </div>
-                <div class="projeto-links" style="margin-top: 15px; display: flex; gap: 10px;">
-                    <a href="${projeto.linkProjeto}" target="_blank" class="btn-projeto" style="background-color: #2e7d32; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold;">Visualizar</a>
-                    <a href="${projeto.linkCodigo}" target="_blank" class="btn-codigo" style="background-color: #f4f7f5; color: #2e7d32; border: 1px solid #2e7d32; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold;">Código</a>
-                </div>
-            </div>
-        `;
-
-        gridProjetos.appendChild(card);
-    });
+    atualizarInterface();
+    
+    document.getElementById('tela-inicial').classList.add('escondido');
+    document.getElementById('tela-fim').classList.add('escondido');
+    document.getElementById('tela-jogo').classList.remove('escondido');
 }
 
-window.addEventListener('DOMContentLoaded', carregarProjetos);
+function atualizarInterface() {
+    document.getElementById('res-dinheiro').innerText = `R$ ${dinheiro}`;
+    document.getElementById('res-sustentabilidade').innerText = `${sustentabilidade}%`;
+    document.getElementById('res-producao').innerText = `${producao}%`;
+    document.getElementById('res-rodada').innerText = rodada;
+
+    // Garante que os números não passem do limite visual ou fiquem negativos
+    if (sustentabilidade > 100) sustentabilidade = 100;
+    if (producao > 100) producao = 100;
+
+    // Valida as condições de derrota instantânea
+    if (sustentabilidade <= 0) {
+        finalizarJogo(false, "Seu solo ficou completamente infértil e a fazenda foi multada por crime ambiental! O futuro precisa de equilíbrio.");
+    } else if (producao <= 0) {
+        finalizarJogo(false, "Sua produção faliu! Você não colheu alimentos suficientes para abastecer o mercado.");
+    } else if (dinheiro < 0) {
+        finalizarJogo(false, "Você faliu! Gastou mais dinheiro do que tinha em caixa.");
+    }
+}
+
+function tomarDecisao(tipo) {
+    const feedback = document.getElementById('feedback-campo');
+
+    if (tipo === 'agrotoxico') {
+        if (dinheiro >= 100) {
+            dinheiro -= 100;
+            producao += 25;
+            sustentabilidade -= 20;
+            feedback.innerText = "⚠️ Agrotóxico aplicado! Insetos eliminados, mas a qualidade do solo e da água despencou.";
+        } else { alert("Dinheiro insuficiente!"); }
+    } 
+    
+    else if (tipo === 'organico') {
+        if (dinheiro >= 200) {
+            dinheiro -= 200;
+            producao += 10;
+            sustentabilidade += 15;
+            feedback.innerText = "🌱 Defensivos biológicos aplicados! Pragas controladas sem agredir a natureza.";
+        } else { alert("Dinheiro insuficiente!"); }
+    } 
+    
+    else if (tipo === 'solar') {
+        if (dinheiro >= 400) {
+            if (!conquistas.solar) {
+                dinheiro -= 400;
+                conquistas.solar = true;
+                sustentabilidade += 20;
+                document.getElementById('elemento-solar').classList.remove('escondido');
+                feedback.innerText = "☀️ Painéis fotovoltaicos instalados! Redução drástica na pegada de carbono da fazenda.";
+            } else { alert("Você já possui Energia Solar instalada!"); }
+        } else { alert("Dinheiro insuficiente!"); }
+    } 
+    
+    else if (tipo === 'drone') {
+        if (dinheiro >= 350) {
+            if (!conquistas.drone) {
+                dinheiro -= 350;
+                conquistas.drone = true;
+                producao += 15;
+                document.getElementById('elemento-drone').classList.remove('escondido');
+                feedback.innerText = "🛸 Drone de mapeamento ativo! Irrigação e plantio controlados com precisão cirúrgica.";
+            } else { alert("Você já possui Drones ativos!"); }
+        } else { alert("Dinheiro insuficiente!"); }
+    }
+
+    atualizarInterface();
+}
+
+// Passar a rodada executa a colheita e gera lucros baseados na produção
+function passarRodada() {
+    // Rendimento: quanto maior a produção e a sustentabilidade juntas, mais você ganha
+    let lucroColheita = Math.floor((producao * 10) + (sustentabilidade * 5));
+    dinheiro += lucroColheita;
+
+    // Bônus passivos das estruturas compradas
+    if (conquistas.solar) sustentabilidade += 5;
+    if (conquistas.drone) dinheiro += 50;
+
+    // Desgaste natural do turno
+    sustentabilidade -= 5; 
+
+    rodada++;
+
+    // Verifica se chegou ao fim das 10 rodadas com sucesso
+    if (rodada > 10) {
+        if (sustentabilidade >= 70 && dinheiro >= 1500) {
+            finalizarJogo(true, `Parabéns! Você alcançou o verdadeiro Agro Forte e Sustentável. Terminou com R$ ${dinheiro} em caixa e uma fazenda ecologicamente exemplar.`);
+        } else {
+            finalizarJogo(true, `Você sobreviveu às 10 rodadas! Porém, sua fazenda ainda precisa equilibrar melhor as finanças e o ecossistema para ganhar o selo Ouro Verde.`);
+        }
+    } else {
+        document.getElementById('feedback-campo').innerText = `🌾 Fim da temporada! A colheita gerou R$ ${lucroColheita} de lucro. Próxima rodada iniciada.`;
+        atualizarInterface();
+    }
+}
+
+function finalizarJogo(vitoria, mensagem) {
+    document.getElementById('tela-jogo').classList.add('escondido');
+    document.getElementById('tela-fim').classList.remove('escondido');
+    
+    const titulo = document.getElementById('fim-titulo');
+    titulo.innerText = vitoria ? "🏆 Vitória Ecológica!" : "❌ Fim de Jogo";
+    titulo.style.color = vitoria ? "#2e7d32" : "#d32f2f";
+    
+    document.getElementById('fim-mensagem').innerText = mensaje || mensagem;
+}
+
+function reiniciarJogo() {
+    iniciarJogo();
+}
