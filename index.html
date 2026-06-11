@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agro Forte: Clicker & Estratégia</title>
+    <title>Agro Forte: Magnata Sustentável</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="game-container">
         <div id="tela-inicial" class="tela">
-            <div class="logo-emoji">🚜🌱</div>
-            <h1>Agro Forte:<br><span>Império Sustentável</span></h1>
-            <p>Transforme um pedaço de terra seco em uma super fazenda tecnológica de alta produtividade e desperdício zero!</p>
-            <div class="recorde-box">🏆 Maior Pontuação: <span id="recorde-valor">0</span> pts</div>
-            <button class="btn-principal" onclick="iniciarJogo()">Começar Safra 🚀</button>
+            <div class="logo-emoji">🚜🌾🍅</div>
+            <h1>Agro Forte:<br><span>Império Sustentável v2</span></h1>
+            <p>Gerencie culturas especializadas, compre maquinários elétricos e crie o ecossistema agrícola perfeito.</p>
+            <div class="recorde-box">🏆 Recorde: <span id="recorde-valor">0</span> pts</div>
+            <button class="btn-principal" onclick="iniciarJogo()">Iniciar Safra 🚀</button>
         </div>
 
         <div id="tela-jogo" class="tela escondido">
@@ -29,46 +29,73 @@
                     <div class="barra-fundo"><div id="barra-sust" class="barra-preenchimento sust"></div></div>
                 </div>
                 <div class="barra-container">
-                    <label>📦 Estoque de Alimentos:</label>
+                    <label>📦 Volume de Produção:</label>
                     <div class="barra-fundo"><div id="barra-prod" class="barra-preenchimento prod"></div></div>
                 </div>
             </div>
 
             <div id="painel-evento" class="missao-box">
-                <span class="tag-missao">🎯 META DO TURNO</span>
-                <p id="evento-desc">Mantenha a natureza acima de 50% para não ser multado.</p>
+                <span class="tag-missao">🎯 DIRETRIZ DO MERCADO</span>
+                <p id="evento-desc">Planeje suas culturas de acordo com o clima regional.</p>
             </div>
 
             <div class="mapa-fazenda">
                 <div class="slot ocupado" id="slot-0">🚜<span>Sede</span></div>
-                <div class="slot" id="slot-1" onclick="comprarTerreno(1)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-2" onclick="comprarTerreno(2)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-3" onclick="comprarTerreno(3)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-4" onclick="comprarTerreno(4)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-5" onclick="comprarTerreno(5)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-6" onclick="comprarTerreno(6)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-7" onclick="comprarTerreno(7)">🟫<span>Comprar</span></div>
-                <div class="slot" id="slot-8" onclick="comprarTerreno(8)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-1" onclick="abrirMenuPlantio(1)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-2" onclick="abrirMenuPlantio(2)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-3" onclick="abrirMenuPlantio(3)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-4" onclick="abrirMenuPlantio(4)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-5" onclick="abrirMenuPlantio(5)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-6" onclick="abrirMenuPlantio(6)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-7" onclick="abrirMenuPlantio(7)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-8" onclick="abrirMenuPlantio(8)">🟫<span>Vazio</span></div>
             </div>
 
-            <div class="log-texto" id="feedback-campo">Clique nos terrenos marrons para investir e plantar!</div>
+            <div class="log-texto" id="feedback-campo">Escolha um terreno marrom para iniciar o cultivo!</div>
 
-            <div class="loja-titulo">⚙️ TECNOLOGIAS DISPONÍVEIS:</div>
+            <div class="loja-titulo">🚜 MAQUINÁRIOS E UPGRADES:</div>
             <div class="grade-loja">
-                <button class="item-loja" id="btn-solar" onclick="comprarUpgrade('solar')">☀️ Painel Solar <br><span class="preco">R$ 300</span></button>
-                <button class="item-loja" id="btn-drone" onclick="comprarUpgrade('drone')">🛸 Drone Link <br><span class="preco">R$ 400</span></button>
-                <button class="item-loja" id="btn-bio" onclick="comprarUpgrade('bio')">🧪 Lab Bio <br><span class="preco">R$ 500</span></button>
+                <button class="item-loja" id="btn-trator" onclick="comprarUpgrade('trator')">⚡ Trator Elétrico<br><span class="preco">R$ 400</span></button>
+                <button class="item-loja" id="btn-gota" onclick="comprarUpgrade('gota')">💧 Gota a Gota<br><span class="preco">R$ 300</span></button>
+                <button class="item-loja" id="btn-bio" onclick="comprarUpgrade('bio')">🧪 Biofertilizante<br><span class="preco">R$ 250</span></button>
             </div>
 
-            <button class="btn-principal btn-avancar" onclick="passarRodada()">Vender Safra e Avançar 🌾</button>
+            <button class="btn-principal btn-avancar" onclick="passarRodada()">Colher Safra e Avançar Turno 🌾</button>
+        </div>
+
+        <div id="modal-plantio" class="modal escondido">
+            <div class="modal-content">
+                <h3>O que deseja plantar neste lote?</h3>
+                <div class="opcoes-plantio">
+                    <button class="card-cultura" onclick="plantarCultura('soja')">
+                        <span class="emoji-cultura">🌱</span>
+                        <strong>Soja Alta Tech</strong>
+                        <p>Rende muito dinheiro rápido, mas desgasta o solo.</p>
+                        <span class="custo">Custo: R$ 120</span>
+                    </button>
+                    <button class="card-cultura" onclick="plantarCultura('arroz')">
+                        <span class="emoji-cultura">🌾</span>
+                        <strong>Arroz Irrigado</strong>
+                        <p>Produção equilibrada, consumo médio de recursos.</p>
+                        <span class="custo">Custo: R$ 100</span>
+                    </button>
+                    <button class="card-cultura" onclick="plantarCultura('arvore')">
+                        <span class="emoji-cultura">🌳</span>
+                        <strong>Árvores Frutíferas</strong>
+                        <p>Lucro moderado, mas regenera muito a sustentabilidade.</p>
+                        <span class="custo">Custo: R$ 150</span>
+                    </button>
+                </div>
+                <button class="btn-fechar" onclick="fecharMenuPlantio()">Cancelar</button>
+            </div>
         </div>
 
         <div id="tela-fim" class="tela escondido">
-            <h2 id="fim-titulo">Resultado da Safra</h2>
-            <div class="rank-badge" id="fim-rank">RANK: ?</div>
+            <h2 id="fim-titulo">Balanço da Safra</h2>
+            <div class="rank-badge" id="fim-rank">RANK</div>
             <p id="fim-mensagem">...</p>
             <div class="pontuacao-final">Score Final: <span id="pontos-finais">0</span></div>
-            <button class="btn-principal" onclick="reiniciarJogo()">Jogar de Novo 🔄</button>
+            <button class="btn-principal" onclick="reiniciarJogo()">Iniciar Nova Temporada 🔄</button>
         </div>
     </div>
 
