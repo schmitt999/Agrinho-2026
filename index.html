@@ -10,11 +10,11 @@
 
     <div class="game-container">
         <div id="tela-inicial" class="tela">
-            <div class="logo-emoji">🚜🌾🍅</div>
-            <h1>Agro Forte:<br><span>Império Sustentável v2</span></h1>
+            <div class="logo-emoji">🚜</div>
+            <h1>Agro Forte:<br><span>Império Sustentável</span></h1>
             <p>Gerencie culturas especializadas, compre maquinários elétricos e crie o ecossistema agrícola perfeito.</p>
             <div class="recorde-box">🏆 Recorde: <span id="recorde-valor">0</span> pts</div>
-            <button class="btn-principal" onclick="iniciarJogo()">Iniciar Safra 🚀</button>
+            <button class="btn-principal" id="btn-iniciar-safra" onclick="iniciarJogo()">Iniciar Safra 🚀</button>
         </div>
 
         <div id="tela-jogo" class="tela escondido">
@@ -41,14 +41,14 @@
 
             <div class="mapa-fazenda">
                 <div class="slot ocupado" id="slot-0">🚜<span>Sede</span></div>
-                <div class="slot" id="slot-1" onclick="abrirMenuPlantio(1)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-2" onclick="abrirMenuPlantio(2)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-3" onclick="abrirMenuPlantio(3)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-4" onclick="abrirMenuPlantio(4)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-5" onclick="abrirMenuPlantio(5)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-6" onclick="abrirMenuPlantio(6)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-7" onclick="abrirMenuPlantio(7)">🟫<span>Vazio</span></div>
-                <div class="slot" id="slot-8" onclick="abrirMenuPlantio(8)">🟫<span>Vazio</span></div>
+                <div class="slot" id="slot-1" onclick="abrirMenuPlantio(1)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-2" onclick="abrirMenuPlantio(2)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-3" onclick="abrirMenuPlantio(3)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-4" onclick="abrirMenuPlantio(4)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-5" onclick="abrirMenuPlantio(5)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-6" onclick="abrirMenuPlantio(6)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-7" onclick="abrirMenuPlantio(7)">🟫<span>Cultivar</span></div>
+                <div class="slot" id="slot-8" onclick="abrirMenuPlantio(8)">🟫<span>Cultivar</span></div>
             </div>
 
             <div class="log-texto" id="feedback-campo">Escolha um terreno marrom para iniciar o cultivo!</div>
@@ -68,24 +68,22 @@
                 <h3>O que deseja plantar neste lote?</h3>
                 <div class="opcoes-plantio">
                     <button class="card-cultura" onclick="plantarCultura('soja')">
-                        <span class="emoji-cultura">🌱</span>
-                        <strong>Soja Alta Tech</strong>
+                        <strong style="color: #81c784;">🌱 Soja Alta Tech</strong>
                         <p>Rende muito dinheiro rápido, mas desgasta o solo.</p>
                         <span class="custo">Custo: R$ 120</span>
                     </button>
                     <button class="card-cultura" onclick="plantarCultura('arroz')">
-                        <span class="emoji-cultura">🌾</span>
-                        <strong>Arroz Irrigado</strong>
+                        <strong style="color: #64b5f6;">🌾 Arroz Irrigado</strong>
                         <p>Produção equilibrada, consumo médio de recursos.</p>
                         <span class="custo">Custo: R$ 100</span>
                     </button>
                     <button class="card-cultura" onclick="plantarCultura('arvore')">
-                        <span class="emoji-cultura">🌳</span>
-                        <strong>Árvores Frutíferas</strong>
-                        <p>Lucro moderado, mas regenera muito a sustentabilidade.</p>
+                        <strong style="color: #aed581;">🌳 Árvores Frutíferas</strong>
+                        <p>Lucro moderado, mas regenera a sustentabilidade.</p>
                         <span class="custo">Custo: R$ 150</span>
                     </button>
                 </div>
+                <br>
                 <button class="btn-fechar" onclick="fecharMenuPlantio()">Cancelar</button>
             </div>
         </div>
