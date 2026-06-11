@@ -1,142 +1,136 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 
 body {
-    background: #1e251f;
-    background-image: radial-gradient(#2e3d30 1px, transparent 1px);
-    background-size: 20px 20px;
+    background: #141915;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 20px;
+    padding: 15px;
 }
 
 .game-container {
     background: #ffffff;
     width: 100%;
-    max-width: 800px;
-    border-radius: 20px;
+    max-width: 600px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-    border: 4px solid #4caf50;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 3px solid #2e7d32;
 }
 
-.tela {
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+.tela { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; }
+.escondido { display: none !important; }
+
+h1 { color: #1b5e20; font-size: 32px; text-align: center; margin-bottom: 15px; }
+h1 span { color: #4caf50; }
+p { color: #555; font-size: 15px; margin-bottom: 25px; text-align: center; max-width: 450px; }
+
+.recorde-box {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: bold;
+    margin-bottom: 25px;
 }
 
-.escondido {
-    display: none !important;
-}
-
-/* Tela Inicial */
-#tela-inicial h1 {
-    font-size: 42px;
-    color: #1b5e20;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-#tela-inicial h1 span { color: #4caf50; }
-#tela-inicial p { color: #555; font-size: 18px; max-width: 500px; margin-bottom: 30px; }
-
-.btn-jogar, .btn-avancar {
+.btn-principal {
     background: #2e7d32;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    padding: 15px 40px;
+    padding: 14px 40px;
     border: none;
-    border-radius: 30px;
+    border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
-    transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(46,125,50,0.3);
+    transition: transform 0.2s, background 0.2s;
 }
-.btn-jogar:hover, .btn-avancar:hover { background: #1b5e20; transform: translateY(-2px); }
+.btn-principal:hover { background: #1b5e20; transform: translateY(-2px); }
 
-/* Barra de Status */
+/* Status */
 .status-bar {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    background: #e8f5e9;
-    padding: 15px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    color: #2e7d32;
-    margin-bottom: 20px;
-    font-size: 15px;
-}
-
-/* Cenário Gráfico da Fazenda */
-.fazenda-visual {
-    width: 100%;
-    height: 180px;
-    background: linear-gradient(#87CEEB, #a3e2a4 70%);
+    background: #f4f7f5;
+    padding: 12px;
     border-radius: 12px;
-    position: relative;
-    border: 2px dashed #81c784;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-.mensagem-campo {
-    background: rgba(255, 255, 255, 0.85);
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
     font-weight: bold;
-    color: #333;
 }
-.item-visual {
-    background: #2e7d32;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    animation: popIn 0.3s ease-out;
-}
-#elemento-solar { background: #fbc02d; color: #333; }
-#elemento-drone { background: #0288d1; }
 
-/* Grade de Ações */
-.painel-acoes { width: 100%; }
-.painel-acoes h3 { font-size: 16px; color: #666; margin-bottom: 15px; }
+/* Alerta de Eventos */
+.evento-alerta {
+    width: 100%;
+    background: #fff3e0;
+    border-left: 5px solid #ff9800;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    animation: piscar 0.5s ease-in-out;
+}
+.evento-alerta h4 { color: #e65100; font-size: 14px; margin-bottom: 3px; }
+.evento-alerta p { color: #5d4037; font-size: 13px; margin-bottom: 0; text-align: left; }
+
+/* Mapa com Emojis */
+.mapa-fazenda {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.slot {
+    background: #a3e2a4;
+    border: 2px solid #81c784;
+    border-radius: 12px;
+    padding: 15px 5px;
+    text-align: center;
+    font-size: 28px;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+}
+.slot span { display: block; font-size: 11px; color: #1b5e20; font-weight: bold; margin-top: 5px; }
+
+.feedback-texto {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    background: #f5f5f5;
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Ações */
 .grade-botoes {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 15px;
 }
 .card-acao {
-    background: #f9f9f9;
+    background: #ffffff;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s;
 }
-.card-acao:hover { border-color: #4caf50; background: #f1f8e9; }
-.card-acao h4 { color: #2e7d32; margin-bottom: 5px; }
-.card-acao p { font-size: 13px; color: #666; margin-bottom: 10px; }
-.card-acao .custo { font-size: 12px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 2px 6px; border-radius: 4px; }
+.card-acao:hover { border-color: #2e7d32; background: #f9fbf9; }
+.card-acao h4 { font-size: 14px; color: #2e7d32; margin-bottom: 3px; }
+.card-acao p { font-size: 12px; color: #666; margin-bottom: 8px; text-align: left; }
+.card-acao .custo { font-size: 11px; font-weight: bold; color: #c62828; background: #ffebee; padding: 2px 6px; border-radius: 4px; }
 
-.btn-avancar { width: 100%; background: #388e3c; margin-top: 10px; }
+.btn-turno { width: 100%; background: #388e3c; }
+.pontuacao-final { font-size: 22px; font-weight: bold; color: #2e7d32; margin-bottom: 20px; }
 
-@keyframes popIn {
-    0% { transform: scale(0); }
-    100% { transform: scale(1); }
+@keyframes piscar {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
 }

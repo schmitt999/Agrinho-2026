@@ -3,65 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agro Forte: Jogo do Futuro Sustentável</title>
+    <title>Agro Forte: O Desafio Sustentável</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="game-container">
         <div id="tela-inicial" class="tela">
-            <h1>Agro Forte:<br><span>Futuro Sustentável</span></h1>
-            <p>Gerencie sua fazenda tecnológica. Produza alimentos, ganhe dinheiro e proteja o meio ambiente. Consegue manter o equilíbrio perfeito?</p>
-            <button class="btn-jogar" onclick="iniciarJogo()">Começar Simulação</button>
+            <h1>Agro Forte:<br><span>Simulador Dinâmico</span></h1>
+            <p>Gerencie sua fazenda enfrentando crises climáticas e flutuações de mercado. Atinja as metas ecológicas e financeiras!</p>
+            <div class="recorde-box">🏆 Recorde Atual: <span id="recorde-valor">0</span> pts</div>
+            <button class="btn-principal" onclick="iniciarJogo()">Começar Simulação</button>
         </div>
 
         <div id="tela-jogo" class="tela escondido">
             <header class="status-bar">
-                <div class="recurso">💰 Dinheiro: <span id="res-dinheiro">R$ 1000</span></div>
-                <div class="recurso">🌱 Sustentabilidade: <span id="res-sustentabilidade">100%</span></div>
-                <div class="recurso">🌽 Produção: <span id="res-producao">50%</span></div>
-                <div class="recurso">📅 Rodada: <span id="res-rodada">1</span>/10</div>
+                <div class="recurso">💰 <span id="res-dinheiro">R$ 1000</span></div>
+                <div class="recurso">🌱 <span id="res-sustentabilidade">100%</span></div>
+                <div class="recurso">🌽 <span id="res-producao">50%</span></div>
+                <div class="recurso">📅 Turno: <span id="res-rodada">1</span>/10</div>
             </header>
 
-            <div class="fazenda-visual" id="fazenda-cenario">
-                <div class="mensagem-campo" id="feedback-campo">Sua fazenda está pronta para começar!</div>
-                <div id="elemento-solar" class="item-visual escondido">☀️ Painéis Solares Ativos</div>
-                <div id="elemento-drone" class="item-visual escondido">🛸 Drone de Precisão Voando</div>
-                <div id="elemento-reflorestamento" class="item-visual escondido">🌳 Área de Reflorestamento</div>
+            <div id="painel-evento" class="evento-alerta escondido">
+                <h4 id="evento-titulo">🚨 EVENTO CLIMÁTICO</h4>
+                <p id="evento-desc">Uma forte seca atingiu a região...</p>
             </div>
 
+            <div class="mapa-fazenda">
+                <div class="slot" id="slot-0">🚜<br><span>Sede</span></div>
+                <div class="slot" id="slot-1">🟫<br><span>Vazio</span></div>
+                <div class="slot" id="slot-2">🟫<br><span>Vazio</span></div>
+                <div class="slot" id="slot-3">🟫<br><span>Vazio</span></div>
+                <div class="slot" id="slot-4">🟫<br><span>Vazio</span></div>
+                <div class="slot" id="slot-5">🟫<br><span>Vazio</span></div>
+            </div>
+
+            <div class="feedback-texto" id="feedback-campo">Prepare suas terras para a primeira colheita!</div>
+
             <main class="painel-acoes">
-                <h3>Escolha sua Estratégia para esta Rodada:</h3>
                 <div class="grade-botoes">
                     <button class="card-acao" onclick="tomarDecisao('agrotoxico')">
-                        <h4>Agrotóxico Pesado</h4>
-                        <p>Aumenta muito a produção rápido.</p>
+                        <h4>Pesticida Químico</h4>
+                        <p>+30% Prod | -20% Sust</p>
                         <span class="custo">Custo: R$ 100</span>
                     </button>
                     <button class="card-acao" onclick="tomarDecisao('organico')">
-                        <h4>Defensivos Orgânicos</h4>
-                        <p>Protege o solo e a biodiversidade.</p>
-                        <span class="custo">Custo: R$ 200</span>
+                        <h4>Adubo Orgânico</h4>
+                        <p>+10% Prod | +20% Sust</p>
+                        <span class="custo">Custo: R$ 150</span>
                     </button>
-                    <button class="card-acao" onclick="tomarDecisao('solar')">
-                        <h4>Instalar Energia Solar</h4>
-                        <p>Gera bônus de sustentabilidade eterno.</p>
+                    <button class="card-acao" id="btn-solar" onclick="tomarDecisao('solar')">
+                        <h4>Painel Solar</h4>
+                        <p>+30% Sust de bônus</p>
                         <span class="custo">Custo: R$ 400</span>
                     </button>
-                    <button class="card-acao" onclick="tomarDecisao('drone')">
-                        <h4>Drones de Irrigação</h4>
-                        <p>Economiza água e otimiza colheitas.</p>
+                    <button class="card-acao" id="btn-drone" onclick="tomarDecisao('drone')">
+                        <h4>Drone de Precisão</h4>
+                        <p>+20% Prod de bônus</p>
                         <span class="custo">Custo: R$ 350</span>
                     </button>
                 </div>
-                <button class="btn-avancar" onclick="passarRodada()">Passar de Turno (Colher) 🌾</button>
+                <button class="btn-principal btn-turno" onclick="passarRodada()">Colher e Avançar Turno 🌾</button>
             </main>
         </div>
 
         <div id="tela-fim" class="tela escondido">
-            <h2 id="fim-titulo">Fim da Simulação</h2>
-            <p id="fim-mensagem">Mensagem de resultado...</p>
-            <button class="btn-jogar" onclick="reiniciarJogo()">Jogar Novamente</button>
+            <h2 id="fim-titulo">Fim da Linha</h2>
+            <p id="fim-mensagem">Resultado...</p>
+            <div class="pontuacao-final">Sua Pontuação: <span id="pontos-finais">0</span> pts</div>
+            <button class="btn-principal" onclick="reiniciarJogo()">Tentar De Novo</button>
         </div>
     </div>
 
