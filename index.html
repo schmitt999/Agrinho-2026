@@ -3,75 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agro Forte: O Desafio Sustentável</title>
+    <title>Agro Forte: Clicker & Estratégia</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="game-container">
         <div id="tela-inicial" class="tela">
-            <h1>Agro Forte:<br><span>Simulador Dinâmico</span></h1>
-            <p>Gerencie sua fazenda enfrentando crises climáticas e flutuações de mercado. Atinja as metas ecológicas e financeiras!</p>
-            <div class="recorde-box">🏆 Recorde Atual: <span id="recorde-valor">0</span> pts</div>
-            <button class="btn-principal" onclick="iniciarJogo()">Começar Simulação</button>
+            <div class="logo-emoji">🚜🌱</div>
+            <h1>Agro Forte:<br><span>Império Sustentável</span></h1>
+            <p>Transforme um pedaço de terra seco em uma super fazenda tecnológica de alta produtividade e desperdício zero!</p>
+            <div class="recorde-box">🏆 Maior Pontuação: <span id="recorde-valor">0</span> pts</div>
+            <button class="btn-principal" onclick="iniciarJogo()">Começar Safra 🚀</button>
         </div>
 
         <div id="tela-jogo" class="tela escondido">
-            <header class="status-bar">
-                <div class="recurso">💰 <span id="res-dinheiro">R$ 1000</span></div>
-                <div class="recurso">🌱 <span id="res-sustentabilidade">100%</span></div>
-                <div class="recurso">🌽 <span id="res-producao">50%</span></div>
-                <div class="recurso">📅 Turno: <span id="res-rodada">1</span>/10</div>
-            </header>
+            <div class="status-topo">
+                <div class="badge">📅 Turno: <span id="res-rodada">1</span>/10</div>
+                <div class="badge ouro">💰 <span id="res-dinheiro">R$ 1000</span></div>
+            </div>
 
-            <div id="painel-evento" class="evento-alerta escondido">
-                <h4 id="evento-titulo">🚨 EVENTO CLIMÁTICO</h4>
-                <p id="evento-desc">Uma forte seca atingiu a região...</p>
+            <div class="status-barras">
+                <div class="barra-container">
+                    <label>🌱 Saúde da Natureza:</label>
+                    <div class="barra-fundo"><div id="barra-sust" class="barra-preenchimento sust"></div></div>
+                </div>
+                <div class="barra-container">
+                    <label>📦 Estoque de Alimentos:</label>
+                    <div class="barra-fundo"><div id="barra-prod" class="barra-preenchimento prod"></div></div>
+                </div>
+            </div>
+
+            <div id="painel-evento" class="missao-box">
+                <span class="tag-missao">🎯 META DO TURNO</span>
+                <p id="evento-desc">Mantenha a natureza acima de 50% para não ser multado.</p>
             </div>
 
             <div class="mapa-fazenda">
-                <div class="slot" id="slot-0">🚜<br><span>Sede</span></div>
-                <div class="slot" id="slot-1">🟫<br><span>Vazio</span></div>
-                <div class="slot" id="slot-2">🟫<br><span>Vazio</span></div>
-                <div class="slot" id="slot-3">🟫<br><span>Vazio</span></div>
-                <div class="slot" id="slot-4">🟫<br><span>Vazio</span></div>
-                <div class="slot" id="slot-5">🟫<br><span>Vazio</span></div>
+                <div class="slot ocupado" id="slot-0">🚜<span>Sede</span></div>
+                <div class="slot" id="slot-1" onclick="comprarTerreno(1)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-2" onclick="comprarTerreno(2)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-3" onclick="comprarTerreno(3)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-4" onclick="comprarTerreno(4)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-5" onclick="comprarTerreno(5)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-6" onclick="comprarTerreno(6)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-7" onclick="comprarTerreno(7)">🟫<span>Comprar</span></div>
+                <div class="slot" id="slot-8" onclick="comprarTerreno(8)">🟫<span>Comprar</span></div>
             </div>
 
-            <div class="feedback-texto" id="feedback-campo">Prepare suas terras para a primeira colheita!</div>
+            <div class="log-texto" id="feedback-campo">Clique nos terrenos marrons para investir e plantar!</div>
 
-            <main class="painel-acoes">
-                <div class="grade-botoes">
-                    <button class="card-acao" onclick="tomarDecisao('agrotoxico')">
-                        <h4>Pesticida Químico</h4>
-                        <p>+30% Prod | -20% Sust</p>
-                        <span class="custo">Custo: R$ 100</span>
-                    </button>
-                    <button class="card-acao" onclick="tomarDecisao('organico')">
-                        <h4>Adubo Orgânico</h4>
-                        <p>+10% Prod | +20% Sust</p>
-                        <span class="custo">Custo: R$ 150</span>
-                    </button>
-                    <button class="card-acao" id="btn-solar" onclick="tomarDecisao('solar')">
-                        <h4>Painel Solar</h4>
-                        <p>+30% Sust de bônus</p>
-                        <span class="custo">Custo: R$ 400</span>
-                    </button>
-                    <button class="card-acao" id="btn-drone" onclick="tomarDecisao('drone')">
-                        <h4>Drone de Precisão</h4>
-                        <p>+20% Prod de bônus</p>
-                        <span class="custo">Custo: R$ 350</span>
-                    </button>
-                </div>
-                <button class="btn-principal btn-turno" onclick="passarRodada()">Colher e Avançar Turno 🌾</button>
-            </main>
+            <div class="loja-titulo">⚙️ TECNOLOGIAS DISPONÍVEIS:</div>
+            <div class="grade-loja">
+                <button class="item-loja" id="btn-solar" onclick="comprarUpgrade('solar')">☀️ Painel Solar <br><span class="preco">R$ 300</span></button>
+                <button class="item-loja" id="btn-drone" onclick="comprarUpgrade('drone')">🛸 Drone Link <br><span class="preco">R$ 400</span></button>
+                <button class="item-loja" id="btn-bio" onclick="comprarUpgrade('bio')">🧪 Lab Bio <br><span class="preco">R$ 500</span></button>
+            </div>
+
+            <button class="btn-principal btn-avancar" onclick="passarRodada()">Vender Safra e Avançar 🌾</button>
         </div>
 
         <div id="tela-fim" class="tela escondido">
-            <h2 id="fim-titulo">Fim da Linha</h2>
-            <p id="fim-mensagem">Resultado...</p>
-            <div class="pontuacao-final">Sua Pontuação: <span id="pontos-finais">0</span> pts</div>
-            <button class="btn-principal" onclick="reiniciarJogo()">Tentar De Novo</button>
+            <h2 id="fim-titulo">Resultado da Safra</h2>
+            <div class="rank-badge" id="fim-rank">RANK: ?</div>
+            <p id="fim-mensagem">...</p>
+            <div class="pontuacao-final">Score Final: <span id="pontos-finais">0</span></div>
+            <button class="btn-principal" onclick="reiniciarJogo()">Jogar de Novo 🔄</button>
         </div>
     </div>
 

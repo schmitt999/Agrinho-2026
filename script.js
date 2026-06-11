@@ -1,35 +1,34 @@
-// Variáveis básicas
 let dinheiro, sustentabilidade, producao, rodada;
-let construcoes = [true, false, false, false, false, false]; // Controle dos slots do mapa
+let mapaSlots = [];
+let upgradesAdquiridos = { solar: false, drone: false, bio: false };
 
-// Banco de Eventos Aleatórios
-const eventos = [
-    { titulo: "☀️ SECA HISTÓRICA", desc: "A falta de água castiga a região. Sustentabilidade cai 15% nesta colheita.", efeito: () => { sustentabilidade -= 15; } },
-    { titulo: "🌧️ CHUVA IDEAL", desc: "Clima perfeito para as plantas! Produção ganha +15% de bônus automático.", efeito: () => { producao += 15; } },
-    { titulo: "📉 QUEDA DO MERCADO", desc: "O preço dos alimentos despencou. O lucro do próximo turno será menor.", efeito: () => { dinheiro -= 100; } },
-    { titulo: "🌿 CERTIFICAÇÃO AGRO", desc: "Sua fazenda ganhou destaque sustentável! Bônus de R$ 250 em caixa.", efeito: () => { dinheiro += 250; } },
-    { titulo: "🐛 INFESTAÇÃO DE LAGARTAS", desc: "Pragas invadem as plantações! Produção reduzida em 20%.", efeito: () => { producao -= 20; } }
+// Lista de eventos e missões que mudam a cada turno de forma imprevisível
+const turnosEventos = [
+    { desc: "Mercado em alta para Orgânicos! Use adubos naturais para ganhar bônus duplo de caixa.", tipo: "bonus" },
+    { desc: "🚨 ALERTA DE PRAGA: Insetos atacando. Sua produção vai cair drasticamente se não plantar defesas.", tipo: "crise" },
+    { desc: "O governo está oferecendo incentivos fiscais para quem investir em Energia Solar.", tipo: "oportunidade" },
+    { desc: "🌧️ Tempestades severas lavaram os nutrientes do solo. Sustentabilidade em risco!", tipo: "clima" },
+    { desc: "Festa do Peão Regional aumentou a demanda local por comida fresca!", tipo: "bonus" }
 ];
 
-// Carregar Recorde ao abrir a página
 document.addEventListener("DOMContentLoaded", () => {
-    let salvo = localStorage.getItem("agroRecorde") || 0;
-    document.getElementById("recorde-valor").innerText = salvo;
+    document.getElementById("recorde-valor").innerText = localStorage.getItem("agroImprio") || 0;
 });
 
 function iniciarJogo() {
     dinheiro = 1000;
-    sustentabilidade = 100;
-    producao = 50;
+    sustentabilidade = 80;
+    producao = 30;
     rodada = 1;
-    construcoes = [true, false, false, false, false, false];
+    mapaSlots = ["Sede", false, false, false, false, false, false, false, false];
+    upgradesAdquiridos = { solar: false, drone: false, bio: false };
 
-    resetarMapaVisual();
-    document.getElementById("painel-evento").classList.add("escondido");
-    document.getElementById("btn-solar").style.opacity = "1";
-    document.getElementById("btn-drone").style.opacity = "1";
-
+    // Resetar botões da loja
+    document.querySelectorAll('.item-loja').forEach(b => b.style.opacity = "1");
+    gerarMapaVisual();
+    mudarMissaoDoTurno();
     atualizarInterface();
+
     document.getElementById('tela-inicial').classList.add('escondido');
     document.getElementById('tela-fim').classList.add('escondido');
     document.getElementById('tela-jogo').classList.remove('escondido');
@@ -37,127 +36,129 @@ function iniciarJogo() {
 
 function atualizarInterface() {
     document.getElementById('res-dinheiro').innerText = `R$ ${dinheiro}`;
-    document.getElementById('res-sustentabilidade').innerText = `${sustentabilidade}%`;
-    document.getElementById('res-producao').innerText = `${producao}%`;
     document.getElementById('res-rodada').innerText = rodada;
 
+    // Ajusta o tamanho das barras de progresso visualmente
     if (sustentabilidade > 100) sustentabilidade = 100;
     if (producao > 100) producao = 100;
+    if (sustentabilidade < 0) sustentabilidade = 0;
+    if (producao < 0) producao = 0;
 
-    // Condições instantâneas de game over
-    if (sustentabilidade <= 0) finalizarJogo("❌ Desastre Ambiental", "Sua fazenda esgotou os recursos naturais do solo. O ecossistema ruiu!");
-    else if (producao <= 0) finalizarJogo("❌ Escassez de Alimentos", "Sua produção foi a zero. Você faliu por não ter o que colher.");
-    else if (dinheiro < 0) finalizarJogo("❌ Falência Financeira", "Suas dívidas superaram o caixa da fazenda.");
+    document.getElementById('barra-sust').style.width = `${sustentabilidade}%`;
+    document.getElementById('barra-prod').style.width = `${producao}%`;
+
+    // Checa derrotas imediatas
+    if (sustentabilidade <= 10) finalizarJogo("FALÊNCIA AMBIENTAL", "Seu solo virou um deserto estéril. Nenhuma planta cresce aqui.");
+    if (dinheiro < 0) finalizarJogo("FALÊNCIA ECONÔMICA", "Suas dívidas bancárias engoliram a sua propriedade.");
 }
 
-function tomarDecisao(tipo) {
-    const feedback = document.getElementById('feedback-campo');
+function gerarMapaVisual() {
+    for (let i = 1; i < 9; i++) {
+        let slot = document.getElementById(`slot-${i}`);
+        if (!mapaSlots[i]) {
+            slot.className = "slot";
+            slot.innerHTML = `🟫<span>Plantar</span>`;
+        } else {
+            slot.className = "slot ocupado";
+            slot.innerHTML = mapaSlots[i] === "Bio" ? "🌻<span>Orgânico</span>" : "🌱<span>Normal</span>";
+        }
+    }
+}
 
-    if (tipo === 'agrotoxico' && verificarDinheiro(100)) {
-        dinheiro -= 100; producao += 30; sustentabilidade -= 20;
-        adicionarAoMapa("🌱", "Plantação");
-        feedback.innerText = "Pesticida químico injetado! Insetos eliminados, mas a terra sofreu.";
+// Mecânica viciante: Clicar no slot abre opções de plantio rápido baseado no dinheiro
+function comprarTerreno(index) {
+    if (mapaSlots[index] !== false) return;
+
+    if (dinheiro >= 150) {
+        // Menu de escolha rápido direto no clique do slot
+        let escolha = confirm("Pressione OK para Plantação Sustentável (R$150) ou CANCELAR para Plantação Química Rápida (R$100)");
+        
+        if (escolha) { // Orgânico
+            dinheiro -= 150; sustentabilidade += 15; producao += 10;
+            mapaSlots[index] = "Bio";
+        } else { // Químico
+            if (dinheiro >= 100) {
+                dinheiro -= 100; sustentabilidade -= 15; producao += 25;
+                mapaSlots[index] = "Quimico";
+            } else { alert("Sem fundos!"); return; }
+        }
+        document.getElementById('feedback-campo').innerText = "Novo lote cultivado com sucesso!";
+        gerarMapaVisual();
+        atualizarInterface();
+    } else {
+        alert("Dinheiro insuficiente para começar um plantio (Mínimo R$100)");
+    }
+}
+
+function comprarUpgrade(tipo) {
+    if (tipo === 'solar' && !upgradesAdquiridos.solar && dinheiro >= 300) {
+        dinheiro -= 300; upgradesAdquiridos.solar = true; sustentabilidade += 20;
+        document.getElementById("btn-solar").style.opacity = "0.3";
+        document.getElementById('feedback-campo').innerText = "☀️ Rede de captação solar ligada!";
     } 
-    else if (tipo === 'organico' && verificarDinheiro(150)) {
-        dinheiro -= 150; producao += 10; sustentabilidade += 20;
-        adicionarAoMapa("🌻", "Orgânico");
-        feedback.innerText = "Adubo orgânico distribuído. Solo enriquecido e protegido!";
+    else if (tipo === 'drone' && !upgradesAdquiridos.drone && dinheiro >= 400) {
+        dinheiro -= 400; upgradesAdquiridos.drone = true; producao += 25;
+        document.getElementById("btn-drone").style.opacity = "0.3";
+        document.getElementById('feedback-campo').innerText = "🛸 Drones configurados para automação.";
     } 
-    else if (tipo === 'solar' && verificarDinheiro(400)) {
-        if (!construcoes.includes("☀️")) {
-            dinheiro -= 400; sustentabilidade += 30;
-            adicionarAoMapa("☀️", "Energia Solar");
-            document.getElementById("btn-solar").style.opacity = "0.4";
-            feedback.innerText = "Matriz solar ativada! Energia limpa garantida.";
-        } else { alert("Você já tem uma usina solar!"); }
-    } 
-    else if (tipo === 'drone' && verificarDinheiro(350)) {
-        if (!construcoes.includes("🛸")) {
-            dinheiro -= 350; producao += 25;
-            adicionarAoMapa("🛸", "Drone Hangar");
-            document.getElementById("btn-drone").style.opacity = "0.4";
-            feedback.innerText = "Hangar de drones construído. Mapeamento aéreo iniciado!";
-        } else { alert("Você já tem um Hangar de Drones!"); }
+    else if (tipo === 'bio' && !upgradesAdquiridos.bio && dinheiro >= 500) {
+        dinheiro -= 500; upgradesAdquiridos.bio = true; sustentabilidade += 15; producao += 15;
+        document.getElementById("btn-bio").style.opacity = "0.3";
+        document.getElementById('feedback-campo').innerText = "🧪 Bio-laboratório gerando sementes puras.";
     }
     atualizarInterface();
 }
 
-function verificarDinheiro(custo) {
-    if (dinheiro >= custo) return true;
-    alert("Saldo insuficiente!");
-    return false;
-}
-
-function adicionarAoMapa(emoji, nome) {
-    // Procura o primeiro slot vazio e constrói nele
-    for (let i = 1; i < construcoes.length; i++) {
-        if (construcoes[i] === false) {
-            construcoes[i] = emoji;
-            let slot = document.getElementById(`slot-${i}`);
-            slot.innerHTML = `${emoji}<br><span>${nome}</span>`;
-            break;
-        }
-    }
-}
-
-function resetarMapaVisual() {
-    for (let i = 1; i < 6; i++) {
-        document.getElementById(`slot-${i}`).innerHTML = `🟫<br><span>Vazio</span>`;
-    }
+function mudarMissaoDoTurno() {
+    let indice = Math.floor(Math.random() * turnosEventos.length);
+    document.getElementById("evento-desc").innerText = turnosEventos[indice].desc;
 }
 
 function passarRodada() {
-    // Lucro gerado no turno baseado na eficiência atual
-    let lucroBase = Math.floor((producao * 12) + (sustentabilidade * 6));
-    dinheiro += lucroBase;
+    // Cálculo do lucro da rodada baseado nas estruturas e produções
+    let multiplicador = upgradesAdquiridos.bio ? 15 : 10;
+    let ganhoTurno = Math.floor(producao * multiplicador);
     
-    // Pequeno desgaste fixo por turno
-    sustentabilidade -= 5; 
-    
+    dinheiro += ganhoTurno;
+
+    // Upgrades passivos por turno
+    if (upgradesAdquiridos.solar) sustentabilidade += 4;
+    if (upgradesAdquiridos.drone) dinheiro += 60;
+
+    // Degradação fixa ambiental
+    sustentabilidade -= 8;
+
     rodada++;
 
     if (rodada > 10) {
-        let pontosfinais = dinheiro + (sustentabilidade * 10) + (producao * 5);
+        let totalScore = dinheiro + (sustentabilidade * 12) + (producao * 6);
+        let recordeSalvo = localStorage.getItem("agroImprio") || 0;
+        if (totalScore > recordeSalvo) localStorage.setItem("agroImprio", totalScore);
         
-        // Lógica de Recorde salvo
-        let recordeAtual = localStorage.getItem("agroRecorde") || 0;
-        if (pontosfinais > recordeAtual) {
-            localStorage.setItem("agroRecorde", pontosfinais);
-            finalizarJogo("🏆 NOVO RECORDE!", `Incrível! Você se provou o mestre do Agro Sustentável!`, pontosfinais);
-        } else {
-            finalizarJogo("🏁 Simulação Concluída", "Você manteve a fazenda funcionando e concluiu as 10 safras!", pontosfinais);
-        }
+        // Define o Rank final baseado na pontuação
+        let rank = "Bronze 🥉";
+        if (totalScore > 2500) rank = "Diamante Verde 💎🌿";
+        else if (totalScore > 1800) rank = "Ouro 🥇";
+        else if (totalScore > 1200) rank = "Prata 🥈";
+
+        document.getElementById("fim-rank").innerText = `RANK: ${rank}`;
+        finalizarJogo("🏆 SAFRA ENCERRADA", "Você operou os 10 turnos comerciais com sucesso!", totalScore);
     } else {
-        document.getElementById('feedback-campo').innerText = `🌾 Fim do turno! A venda da colheita rendeu R$ ${lucroBase}.`;
-        acionarEventoAleatorio();
+        document.getElementById('feedback-campo').innerText = `💰 Colheita realizada! Faturamento de +R$ ${ganhoTurno}.`;
+        mudarMissaoDoTurno();
         atualizarInterface();
     }
 }
 
-function acionarEventoAleatorio() {
-    // 60% de chance de acontecer um evento surpresa a cada início de turno
-    if (Math.random() > 0.4) {
-        let sorteado = eventos[Math.floor(Math.random() * eventos.length)];
-        document.getElementById("evento-titulo").innerText = sorteado.titulo;
-        document.getElementById("evento-desc").innerText = sorteado.desc;
-        document.getElementById("painel-evento").classList.remove("escondido");
-        sorteado.efeito();
-    } else {
-        document.getElementById("painel-evento").classList.add("escondido");
-    }
-}
-
-function finalizarJogo(titulo, mensagem, pontos = 0) {
+function finalizarJogo(titulo, msg, pontos = 0) {
     document.getElementById('tela-jogo').classList.add('escondido');
     document.getElementById('tela-fim').classList.remove('escondido');
-    
     document.getElementById('fim-titulo').innerText = titulo;
-    document.getElementById('fim-mensagem').innerText = mensagem;
+    document.getElementById('fim-mensagem').innerText = msg;
     document.getElementById('pontos-finais').innerText = pontos;
 }
 
 function reiniciarJogo() {
-    // Atualiza o menu com o recorde atualizado antes de recomeçar
-    document.getElementById("recorde-valor").innerText = localStorage.getItem("agroRecorde") || 0;
+    document.getElementById("recorde-valor").innerText = localStorage.getItem("agroImprio") || 0;
     iniciarJogo();
 }
